@@ -6,12 +6,14 @@
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 <base target="_blank">
 <link rel="stylesheet" type="text/css" href="./Qgis2threejs.css">
+<style type="text/css">
+#popup, #header, #layerpanel {
+  left: 36px;
+}
+</style>
 <script src="./threejs/three.min.js"></script>
 <script src="./threejs/OrbitControls.js"></script>
-<script src="./tweenjs/tween.js"></script>
 <script src="./Qgis2threejs.js"></script>
-<script src="./dat-gui/dat.gui.min.js"></script>
-<script src="./dat-gui_panel.js"></script>
 </head>
 <body>
 <div id="view">
@@ -72,10 +74,9 @@
       </table>
 
       <h1>About</h1>
-      <div id="about">
+      <div id="about"><img src="./Qgis2threejs.png">
         This page was made with <a href="https://www.qgis.org/">QGIS</a> and <a href="https://github.com/minorua/Qgis2threejs">Qgis2threejs</a> plugin (version 2.7.1).
-        <div>Powered by <a href="https://threejs.org/">three.js</a>,
-        <a href="https://code.google.com/p/dat-gui/">dat-gui</a>
+        <div>Powered by <a href="https://threejs.org/">three.js</a>
         <span id="lib_proj4js"> and <a href="https://trac.osgeo.org/proj4js/">Proj4js</a></span>.</div>
       </div>
     </div>
@@ -85,10 +86,22 @@
 <!-- progress bar -->
 <div id="progress"><div id="progressbar"></div></div>
 
+<!-- menu -->
+<div id="toolbtns">
+  <div id="layerbtn"></div>
+  <div id="animbtn" class="hidden"></div>
+  <div id="infobtn"></div>
+</div>
+
 <!-- header and footer -->
 <div id="header">MAPA DOS LOCAIS HISTÓRICOS REDENTORISTAS: 
-1: Marianella, Casa Natal de S. Afonso; 2: Gruta de Santo Afonso; 3: Casa Anastasio: 1ª. Residência; 4: Scala: 1ª. Casa da Fundação da C.Ss.R.; 5: Ss. Trinità: 3ª. Casa; 6: Domo de San Lorenzo; 7: Basílica de Santo Afonso; 8: Muro Lucano, Casa Natal de São Geraldo; 9: Basílica de São Geraldo; 10: Domo de St. Agata de' Goti; 11: Deliceto, Santuário de Santa Maria della Consolazione; 12: Villa degli Schiavi; 13: Roma, Cúria Geral; 14: Tasovice, Casa Natal de São Clemente</div>
+1: Marianella, Casa Natal de S. Afonso; 2: Scala: Gruta de Santo Afonso; Casa Anastasio: 1ª. Residência; 1ª. Casa da C.Ss.R.; 3: Ss. Trinità: 3ª. Casa; 4: Basílica de Santo Afonso; 5: Muro Lucano, Casa Natal de São Geraldo; 6: Basílica de São Geraldo; 7: Domo de St. Agata de' Goti; 8: Deliceto, Santuário de Santa Maria della Consolazione; 9: Villa degli Schiavi; 10: Roma, Cúria Geral; 11: Tasovice, Casa Natal de São Clemente</div>
 <div id="footer"></div>
+
+<!-- layer panel -->
+<div id="layerpanel">
+  <div id="layerlist"></div>
+</div>
 
 <!-- animation -->
 <div id="narrativebox" class="ef1">
@@ -99,9 +112,9 @@
 </div>
 
 <script>
-Q3D.Config.viewpoint = {lookAt:{x:1401598.3168000001,y:5328302.549199999,z:2.7163575092951457e-11},pos:{x:1395590.7347738515,y:3607264.063394991,z:27363.204568789373}};
+Q3D.Config.allVisible = true;
+Q3D.Config.viewpoint = {lookAt:{x:1401598.3168,y:5256542.090526106,z:-6655.027107105722},pos:{x:1401598.3167999997,y:3560151.3537187083,z:35325.99132575463}};
 Q3D.Config.localMode = true;
-Q3D.Config.animation.enabled = true;
 Q3D.Config.northArrow.enabled = true;
 Q3D.Config.northArrow.color = 0xffff01;
 
@@ -109,23 +122,15 @@ var container = document.getElementById("view"),
     app = Q3D.application,
     gui = Q3D.gui;
 
-app.init(container);    // initialize viewer
+app.init(container);       // initialize viewer
 
 // load the scene
 app.loadSceneFile("./data/index/scene.js", function (scene) {
   // scene file has been loaded
   app.start();
-
-  gui.dat.initLayersFolder(scene);
-
 }, function (scene) {
   // all relevant files have been loaded
 
-  if (Q3D.Config.gui.customPlane) {
-    var zMin = undefined,
-        zMax = undefined;
-    gui.dat.initCustomPlaneFolder(zMin, zMax);
-  }
 });
 </script>
 </body>
